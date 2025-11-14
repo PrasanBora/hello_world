@@ -21,3 +21,20 @@ jobs:
 
       - name: Run Prettier check
         run: npx prettier@latest --check .
+
+      - name: Notify Slack on failure
+        if: failure()
+        uses: 8398a7/action-slack@v3  
+        with:
+          status: failure
+          channel: 'system-notifications'
+          text: |
+            🚨 Prettier check failed in ${{ github.repository }}
+            
+            Branch: ${{ github.ref }}
+            Commit: ${{ github.sha }}
+            Author: ${{ github.actor }}
+            
+            View details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
